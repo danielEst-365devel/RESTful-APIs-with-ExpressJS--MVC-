@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "23223c82-728f-41d5-9343-8e47328e2cae",
+		"name": "Equipment Reservation System API",
+		"description": "Complete API collection for Equipment Reservation System with authentication, equipment management, reservations, and user management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "45293564"
+	},
+	"item": [
+		{
+			"name": "Health & System",
+			"item": [
+				{
+					"name": "Server Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/health",
+						"description": "Check server and database status"
+					},
+					"response": []
+				},
+				{
+					"name": "Detailed System Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/system/status",
+						"description": "Get detailed system status including database connections and performance metrics"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Equipment Management",
+			"item": [
+				{
+					"name": "Get Available Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/equipment",
+						"description": "Get all available equipment for reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment/search?q=camera&category=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "camera"
+								},
+								{
+									"key": "category",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Search equipment by name, description, or equipment code"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Equipment Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/equipment/categories",
+						"description": "Get all equipment categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/equipment/{{equipment_id}}",
+						"description": "Get detailed information about specific equipment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservations",
+			"item": [
+				{
+					"name": "Get All Reservations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations?status=Pending&limit=20&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "Pending"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Get all reservations with optional filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.reservation_id) {",
+									"        pm.collectionVariables.set('reservation_id', response.data.reservation_id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"equipment_id\": {{equipment_id}},\n  \"start_date\": \"2025-07-25 09:00:00\",\n  \"end_date\": \"2025-07-30 17:00:00\",\n  \"purpose\": \"Photography project for marketing campaign\",\n  \"special_instructions\": \"Handle with care, equipment needed for outdoor shoot\"\n}"
+						},
+						"url": "{{base_url}}/api/reservations",
+						"description": "Create a new equipment reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Reservations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations/my?limit=10&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"my"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Get current user's reservations"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reservation Statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/api/reservations/statuses",
+						"description": "Get all available reservation statuses"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Reservation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": "{{base_url}}/api/reservations/{{reservation_id}}",
+						"description": "Get detailed information about specific reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation Status (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"Approved\",\n  \"notes\": \"Reservation approved by administrator\"\n}"
+						},
+						"url": "{{base_url}}/api/reservations/{{reservation_id}}/status",
+						"description": "Update reservation status (admin/staff only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Reservation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"Cancelled\",\n  \"notes\": \"User requested cancellation\"\n}"
+						},
+						"url": "{{base_url}}/api/reservations/{{reservation_id}}/status",
+						"description": "Cancel a reservation"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{jwt_token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Add timestamp to requests for debugging",
+					"pm.request.headers.add({",
+					"    key: 'X-Request-Time',",
+					"    value: new Date().toISOString()",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test to check response time",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"// Global test to check if response is JSON",
+					"pm.test('Response is JSON', function () {",
+					"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "equipment_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "reservation_id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
