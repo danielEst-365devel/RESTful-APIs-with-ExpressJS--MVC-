@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Reservation System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🏢 Equipment Reservation System</h1>
+            <p>Reserve equipment quickly and efficiently</p>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Server Status:</span>
+                    <span id="server-status" class="stat-value">Checking...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <nav class="main-nav">
+            <button class="nav-btn active" data-section="equipment">🔧 Browse Equipment</button>
+            <button class="nav-btn" data-section="reservations">📋 My Reservations</button>
+            <button class="nav-btn" data-section="create">➕ New Reservation</button>
+            <button class="nav-btn" data-section="admin">⚙️ Admin Panel</button>
+        </nav>
+
+        <!-- Equipment Browse Section -->
+        <section id="equipment-section" class="content-section active">
+            <div class="section-header">
+                <h2>Available Equipment</h2>
+                <div class="search-controls">
+                    <div class="search-group">
+                        <input type="text" id="equipment-search" placeholder="Search equipment..." />
+                        <button id="search-btn">🔍 Search</button>
+                    </div>
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                    <button id="load-equipment-btn">🔄 Refresh</button>
+                </div>
+            </div>
+            
+            <div id="equipment-grid" class="equipment-grid">
+                <div class="loading">Loading equipment...</div>
+            </div>
+        </section>
+
+        <!-- Reservations Section -->
+        <section id="reservations-section" class="content-section">
+            <div class="section-header">
+                <h2>My Reservations</h2>
+                <div class="filter-controls">
+                    <select id="status-filter">
+                        <option value="">All Statuses</option>
+                    </select>
+                    <button id="load-reservations-btn">🔄 Refresh</button>
+                </div>
+            </div>
+            
+            <div id="reservations-list" class="reservations-list">
+                <div class="loading">Loading reservations...</div>
+            </div>
+        </section>
+
+        <!-- Create Reservation Section -->
+        <section id="create-section" class="content-section">
+            <div class="section-header">
+                <h2>Create New Reservation</h2>
+            </div>
+            
+            <div class="reservation-form-container">
+                <form id="reservation-form" class="reservation-form">
+                    <div class="form-group">
+                        <label for="selected-equipment">Selected Equipment:</label>
+                        <div id="selected-equipment" class="selected-equipment">
+                            <span class="no-selection">No equipment selected. Browse equipment first.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-date">Start Date & Time:</label>
+                            <input type="datetime-local" id="start-date" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end-date">End Date & Time:</label>
+                            <input type="datetime-local" id="end-date" name="end_date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purpose">Purpose of Use:</label>
+                        <textarea id="purpose" name="purpose" rows="3" placeholder="Describe why you need this equipment..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="special-instructions">Special Instructions:</label>
+                        <textarea id="special-instructions" name="special_instructions" rows="2" placeholder="Any special handling or setup requirements..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit">📋 Submit Reservation</button>
+                        <button type="button" id="clear-form-btn">🗑️ Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Panel Section -->
+        <section id="admin-section" class="content-section">
+            <div class="section-header">
+                <h2>Admin Panel</h2>
+                <p class="section-description">Manage reservations and view system statistics</p>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="overview">📊 Overview</button>
+                <button class="admin-tab-btn" data-tab="all-reservations">📋 All Reservations</button>
+                <button class="admin-tab-btn" data-tab="system">⚙️ System Status</button>
+            </div>
+
+            <div id="overview-tab" class="admin-tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Equipment Count</h3>
+                        <div class="stat-number" id="total-equipment">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Reservations</h3>
+                        <div class="stat-number" id="active-reservations">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <div class="stat-number" id="total-users">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="all-reservations-tab" class="admin-tab-content">
+                <div class="admin-controls">
+                    <select id="admin-status-filter">
+                        <option value="">All Statuses</option>
+                    </select>
+                    <button id="load-all-reservations-btn">🔄 Load All</button>
+                </div>
+                <div id="all-reservations-list" class="reservations-list">
+                    <div class="loading">Click "Load All" to view reservations...</div>
+                </div>
+            </div>
+
+            <div id="system-tab" class="admin-tab-content">
+                <div id="system-status" class="system-status">
+                    <button id="load-system-status-btn">🔄 Check System Status</button>
+                    <div id="system-details"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Equipment Details Modal -->
+    <div id="equipment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-equipment-name">Equipment Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="equipment-details">
+                <!-- Equipment details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button id="reserve-equipment-btn" class="btn-primary">📋 Reserve This Equipment</button>
+                <button class="modal-close btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span id="notification-message"></span>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Equipment Reservation System | Built with vanilla HTML, CSS & JavaScript</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
